@@ -1,4 +1,4 @@
-# Проектная работа № 12: MESTO - REACT - AUTH
+# Проектная работа № 12: MESTO - REACT
 
 ## **Описание проекта:**
 
@@ -23,8 +23,7 @@
 
 [Ссылка на GitHub Pages](https://nataly2898.github.io/react-mesto-auth/)
 
-[Ссылка на макет в Figma](https://www.figma.com/file/kRVLKwYG3d1HGLvh7JFWRT/JavaScript.-Sprint-6?node-id=0%3A1)
-
+[Ссылка на макет в Figma](https://www.figma.com/file/5H3gsn5lIGPwzBPby9jAOo/Sprint-14-RU?node-id=0%3A1)
 
 ## Available Scripts
 

@@ -272,15 +272,6 @@ function App() {
        onClose={closeAllPopups}
        onAddPlace = {handleAddPlaceSubmit}
     />
-
-    {/* Попап подтверждение удаления карточки 
-    <PopupWithForm
-      name="addcard-delete"
-      title="Вы уверены?"
-      buttonText="Да"
-      isOpen={false}
-      onClose={closeAllPopups}
-    /> */}
     
     {/* Попап открытия карточки */}
     <ImagePopup
