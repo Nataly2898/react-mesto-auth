@@ -40,7 +40,7 @@ function App() {
     api.getUserInfo()
       .then(setCurrentUser)
       .catch(console.error);
-  }, [])
+  }, [loggedIn])
 
   //Получение информации о карточках
   useEffect(() => {
@@ -51,18 +51,18 @@ function App() {
         setCards(res);
       })
       .catch(err => console.error(err));
-  }, []);
+  }, [loggedIn]);
 
 
   function handleAddPlaceSubmit(data) {
     api.addCard(data)
-    .then((newCard) => {
-      setCards([newCard, ...cards]);
-      closeAllPopups();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   // Поддержка лайков и дизлайков
@@ -71,33 +71,33 @@ function App() {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     if (!isLiked) {
       api.setLike(card._id)
-      .then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((newCard) => {
+          setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     else {
       api.deleteLike(card._id)
-      .then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((newCard) => {
+          setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
 
   // Поддержка удаления карточки
   function handleCardDelete(card) {
     api.deleteCard(card._id)
-    .then(() => {
-      setCards(cards.filter((c) => c._id !== card._id));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then(() => {
+        setCards(cards.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   // Обработчик редактирования аватара
@@ -114,7 +114,7 @@ function App() {
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
   }
- 
+
   // Обработчик открытия карточки
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -147,7 +147,7 @@ function App() {
         closeAllPopups();
       })
       .catch(console.error);
-    }
+  }
 
   // Регистрация и Авторизация профиля
   function handleRegister(email, password) {
@@ -169,7 +169,7 @@ function App() {
       .then((response) => {
         if (response) {
           localStorage.setItem('jwt', response.token);
-          history.push('/');
+          handleCheckToken(response.token);
         }
       })
       .catch((err) => {
@@ -187,7 +187,7 @@ function App() {
   }
 
   // Проверка токена
-   const handleCheckToken = () => {
+  const handleCheckToken = () => {
     const jwt = localStorage.getItem('jwt');
     if (!jwt) {
       return;
@@ -196,102 +196,102 @@ function App() {
       .then((response) => {
         setUserEmail(response.data.email);
         setLoggedIn(true);
-        history.push('/');
       })
       .catch((err) => console.log(err));
-   };
+  };
 
-   useEffect(() => {
+  useEffect(() => {
     handleCheckToken();
-   }, []);
+  }, []);
 
-   useEffect(() => {
+  useEffect(() => {
+    console.log(loggedIn)
     if (loggedIn) {
       history.push('/');
     }
-   }, [loggedIn]);
-   
+  }, [loggedIn]);
+
   return (
-   <CurrentUserContext.Provider value={currentUser}>
-    <div className="root">
-      <div className="page">
-        
-    <Header 
-      loggedIn={loggedIn}
-      userEmail={userEmail}
-      onSignOut={handleSignOut}
-    />
-  
-     <Switch>
-      <ProtectedRoute
-        exact path="/"
-        loggedIn={loggedIn}
-        component={Main}
-        cards={cards}
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onEditAvatar={handleEditAvatarClick}
-        onCardClick={handleCardClick}
-        onCardLike={handleCardLike}
-        onCardDelete={handleCardDelete}
-      />
-      
-      <Route path="/signin">
-         <Login 
-           onLogin={handleLogin}
-         />
-      </Route>
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="root">
+        <div className="page">
 
-      <Route path="/signup">
-         <Register
-           onRegister={handleRegister}
-         />
-      </Route>    
+          <Header
+            loggedIn={loggedIn}
+            userEmail={userEmail}
+            onSignOut={handleSignOut}
+          />
 
-      <Route exact path="*">
-      {loggedIn ? <Redirect to="/"/> : <Redirect to="/signin"/>}
-      </Route>
-    </Switch>
+          <Switch>
+            <ProtectedRoute
+              exact path="/"
+              loggedIn={loggedIn}
+              component={Main}
+              cards={cards}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
 
-    <Footer />
-    
-    {/* Попап обновление Аватара */}
-    <EditAvatarPopup
-      isOpen={isEditAvatarPopupOpen}
-      onClose={closeAllPopups}
-      onUpdateAvatar={handleUpdateAvatar}
-    />
- 
-    {/* Попап редактирование профиля */}
-    <EditProfilePopup
-      isOpen={isEditProfilePopupOpen}
-      onClose={closeAllPopups}
-      onUpdateUser={handleUpdateUser}
-    />
+            <Route path="/signin">
+              <Login
+                onLogin={handleLogin}
+              />
+            </Route>
 
-    {/* Попап добавление Карточки */}
-   <AddPlacePopup
-       isOpen={isAddPlacePopupOpen}
-       onClose={closeAllPopups}
-       onAddPlace = {handleAddPlaceSubmit}
-    />
-    
-    {/* Попап открытия карточки */}
-    <ImagePopup
-      card = {selectedCard}
-      onClose = {closeAllPopups}
-    />
+            <Route path="/signup">
+              <Register
+                onRegister={handleRegister}
+              />
+            </Route>
 
-    <InfoTooltip
-      isOpen={infoTooltipPopupOpen}
-      isSuccessfulReg={isSuccessfulReg}
-      onClose={closeAllPopups}
-    />
+            <Route exact path="*">
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+            </Route>
+          </Switch>
 
-     </div>
-    </div>
-   </CurrentUserContext.Provider>
- );
+          <Footer />
+
+          {/* Попап обновление Аватара */}
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+          />
+
+          {/* Попап редактирование профиля */}
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+          />
+
+          {/* Попап добавление Карточки */}
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
+
+          {/* Попап открытия карточки */}
+          <ImagePopup
+            card={selectedCard}
+            onClose={closeAllPopups}
+          />
+
+          <InfoTooltip
+            isOpen={infoTooltipPopupOpen}
+            isSuccessfulReg={isSuccessfulReg}
+            onClose={closeAllPopups}
+          />
+
+        </div>
+      </div>
+    </CurrentUserContext.Provider>
+  );
 }
 
 export default App;
