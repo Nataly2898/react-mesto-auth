@@ -35,6 +35,8 @@ function App() {
 
   //Получение информации о пользователе
   useEffect(() => {
+    const jwt = localStorage.getItem('jwt')
+    if (!jwt) return
     api.getUserInfo()
       .then(setCurrentUser)
       .catch(console.error);
@@ -42,6 +44,8 @@ function App() {
 
   //Получение информации о карточках
   useEffect(() => {
+    const jwt = localStorage.getItem('jwt')
+    if (!jwt) return
     api.getInitialCards()
       .then(res => {
         setCards(res);
@@ -83,7 +87,7 @@ function App() {
         console.log(err);
       });
     }
-  } 
+  }
 
   // Поддержка удаления карточки
   function handleCardDelete(card) {
@@ -165,7 +169,6 @@ function App() {
       .then((response) => {
         if (response) {
           localStorage.setItem('jwt', response.token);
-          handleCheckToken();
           history.push('/');
         }
       })
@@ -183,7 +186,7 @@ function App() {
     history.push("/signin");
   }
 
-   // Проверка токена
+  // Проверка токена
    const handleCheckToken = () => {
     const jwt = localStorage.getItem('jwt');
     if (!jwt) {
@@ -207,7 +210,7 @@ function App() {
       history.push('/');
     }
    }, [loggedIn]);
-
+   
   return (
    <CurrentUserContext.Provider value={currentUser}>
     <div className="root">
